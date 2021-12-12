@@ -1,11 +1,11 @@
 #![forbid(non_ascii_idents)]
 use std::{
     fmt::{self, Display},
-    ops::Add,
+    ops::{Add, Mul},
 };
 
 
-// COOKIES
+// COOKIE
 #[derive(Debug, Clone)]
 struct Cookie;
 
@@ -20,6 +20,14 @@ impl Add<Self> for Cookie {
 
     fn add(self, other: Self) -> Cookies {
         Cookies(vec![self, other])
+    }
+}
+
+impl Mul<i32> for Cookie {
+    type Output = Cookies;
+
+    fn mul(self, how_many: i32) -> Cookies {
+        Cookies((0..how_many).map(|_| Cookie).collect::<Vec<Cookie>>())
     }
 }
 
@@ -41,11 +49,15 @@ impl Add<Cookie> for Cookies {
 
 impl Display for Cookies {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "yum yum!  {}",
-            self.0.iter().map(|_| "🍪 ").collect::<String>()
-        )
+        match self.0.len() {
+            n if n >= 10 => write!(f, "{} 🍪 ?? TOO MUCH.", self.0.len()),
+            _ => write!(
+                f,
+                "yum yum!  {}",
+                self.0.iter().map(|_| "🍪 ").collect::<String>()
+            )
+        }
+        
     }
 }
 
@@ -53,4 +65,5 @@ fn main() {
     println!("{}", Cookie + Cookie);
     println!("{}", Cookie);
     println!("{}", Cookie + Cookie + Cookie + Cookie);
+    println!("{}", Cookie * 10);
 }
