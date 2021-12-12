@@ -46,10 +46,21 @@ impl Add<Cookie> for Cookies {
     }
 }
 
+impl Mul<i32> for Cookies {
+    type Output = Cookies;
+
+    fn mul(mut self, how_many: i32) -> Cookies {
+        let current_cookies = self.0.clone();
+        (0..how_many - 1).for_each(|_| self.0.extend(current_cookies.clone()));
+        self
+    }
+}
+
 
 impl Display for Cookies {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.0.len() {
+            n if n >= 40 => write!(f, "go see your doctor."),
             n if n >= 10 => write!(f, "{} 🍪 ?? TOO MUCH.", self.0.len()),
             _ => write!(
                 f,
@@ -66,4 +77,6 @@ fn main() {
     println!("{}", Cookie);
     println!("{}", Cookie + Cookie + Cookie + Cookie);
     println!("{}", Cookie * 10);
+    println!("{}", (Cookie + Cookie + Cookie) * 5);
+    println!("{}", Cookie * 60);
 }
